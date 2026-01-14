@@ -42,11 +42,22 @@ class UserLoginView(LoginView):
     authentication_form = LoginForm
 
     def get_success_url(self):
-        return reverse_lazy("profile")
+        return reverse_lazy("profile", kwargs = {"pk":self.request.user.pk})
 
 class UserLogoutView(LogoutView):
     next_page = reverse_lazy('login')
 
+class ProfileDetailView(DetailView):
+    model = UserProfile
+    context_object_name = "profile"
+    template_name = "auth_system/profile.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user"] = self.object.user
+        print(context)
+        return context
+        
 # class UsersListView(LoginRequiredMixin,  ListView):
 #     model = CustomUser
 #     template_name = "auth_system/users_list.html"
