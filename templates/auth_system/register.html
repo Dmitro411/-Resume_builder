@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Реєстрація{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h3 class="card-title mb-4 text-center">Реєстрація</h3>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% for field in profile_form %}
+                                <div class="mb-3">
+                                    {{ field.label_tag }}
+                                    {% if field.name == 'avatar' %}
+                                        <div class="mb-2">
+                                            <img id="avatarPreview"
+                                                src="{% if field.value %}{{ field.value.url }}{% endif %}"
+                                                alt="Avatar Preview"
+                                                class="img-thumbnail mb-2"
+                                                style="max-width: 150px; display: {% if field.value %}block{% else %}none{% endif %};">
+                                        </div>
+                                    {% endif %}
+                                    {{ field }}
+                                    {% if field.help_text %}
+                                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                                    {% endif %}
+                                    {% for error in field.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                        {% endfor %}
+
+                        {% for field in user_form %}
+                                <div class="mb-3">
+                                    {{ field.label_tag }}
+                                    {{ field }}
+                                    {% if field.help_text %}
+                                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                                    {% endif %}
+                                    {% for error in field.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill">Зареєструватися</button>
+                    </form>
+                    <div class="mt-3 text-center">
+                        Вже є акаунт? <a href="{% url 'login' %}">Увійти</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JS для попереднього перегляду аватара
+    const avatarInput = document.getElementById("id_avatar");
+    const avatarPreview = document.getElementById("avatarPreview");
+
+    if(avatarInput) {
+        avatarInput.addEventListener("change", function(){
+            const file = this.files[0];
+            if(file){
+                const reader = new FileReader();
+                reader.onload = function(e){
+                    avatarPreview.setAttribute("src", e.target.result);
+                    avatarPreview.style.display = "block";
+                }
+                reader.readAsDataURL(file);
+            } else {
+                avatarPreview.style.display = "none";
+            }
+        });
+    }
+</script>
+{% endblock %}
