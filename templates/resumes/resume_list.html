@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %} Моє резюме {% endblock  %}
+{% block content %}
+{% for resume in resumes %}
+
+<div class="card text-center">
+  <div class="card-header">
+    {{ resume.title }}
+  </div>
+  <div class="card-body">
+    <p class="card-text">{{ resume.created_at|date:"Y-m-d" }}</p>
+    <p class="card-text">{{ resume.updated_at|date:"Y-m-d" }}</p>
+    <a href="{% url 'resume-detail' resume.pk %}" class="btn btn-primary">Переглянути резюме</a>
+  </div>
+  <div class="card-footer text-body-secondary">
+  </div>
+</div>
+
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %} Створення резюме {% endblock  %}
+{% block content %}
+<form method = "POST">
+    {% csrf_token %}
+    <h2>Створити резюме</h2>
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success btn-lg">Створити</button>
+    <a href="{% url 'resume-list' %}" type="button" class="btn btn-danger btn-lg">Відмінити</a>
+</form>
+
+{% endblock %}
