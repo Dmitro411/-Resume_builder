@@ -3,16 +3,18 @@
 {% block content %}
 {% for resume in resumes %}
 
-<div class="card text-center">
+<div class="card text-center my-3">
   <div class="card-header">
-    {{ resume.title }}
+    <h3>{{ resume.title }}</h3>
   </div>
   <div class="card-body">
-    <p class="card-text">{{ resume.created_at|date:"Y-m-d" }}</p>
-    <p class="card-text">{{ resume.updated_at|date:"Y-m-d" }}</p>
-    <a href="{% url 'resume-detail' resume.pk %}" class="btn btn-primary">Переглянути резюме</a>
+    <p class="card-text"><strong>Створено:</strong> {{ resume.created_at|date:"Y-m-d" }}</p>
+    <p class="card-text"><strong>Оновлено:</strong> {{ resume.updated_at|date:"Y-m-d" }}</p>
   </div>
   <div class="card-footer text-body-secondary">
+    <a href="{% url 'resume-detail' resume.pk %}" class="btn btn-primary">Переглянути резюме</a>
+    <a href="#" class="btn btn-warning">Редагувати резюме</a>
+    <a href="#" class="btn btn-danger">Вилучити резюме</a>
   </div>
 </div>
 

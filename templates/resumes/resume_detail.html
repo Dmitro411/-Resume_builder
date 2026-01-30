@@ -1,20 +1,24 @@
 {% extends "base.html" %}
 {% block title %} Моє резюме {% endblock  %}
 {% block content %}
-<div class="card text-center">
+<h1>{{ resume.title }}</h1>
+{% for section in sections %}
+<div class="card text-center mb-3">
   <div class="card-header">
-    {{ resume.title }}
+    <h3>{{ section.title }}</h3>
   </div>
-  {% for section in sections %}
-  <div class="card-body">
-    <h5 class="card-title">{{ section.title }}</h5>
-    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-    <a href="#" class="btn btn-primary">Go somewhere</a>
-  </div>
-  {% endfor %}
-  <div class="card-footer text-body-secondary">
-    <a type="button" href="{% url 'resume-section-create' resume.pk %}" class="btn btn-success">Додати секцію</a>
-  </div>
+  {% if section.items.all %}
+    <div class="card-body">
+      {% for item in section.items.all %}
+      <p class="card-text">{{ item.name|linebreaks }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+    <div class="card-footer text-body-secondary">
+      <a href="#" class="btn btn-primary">Додати {{ section.title }}</a>
+    </div>
 </div>
+{% endfor %}
+<a type="button" href="{% url 'resume-section-create' resume.pk %}" class="btn btn-success">Додати секцію</a>
 
 {% endblock %}

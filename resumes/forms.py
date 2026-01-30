@@ -1,5 +1,5 @@
 from django.forms import ModelForm, Form, DateInput, TextInput, FileInput, CheckboxInput, NumberInput, Select
-from .models import Resume, ResumeSection, Education, Experience, Skill
+from .models import Resume, ResumeSection, EducationItem, ExperienceItem, SkillItem
 
 class ResumeCreateForm(ModelForm):
     
@@ -31,41 +31,41 @@ class ResumeSectionCreateForm(ModelForm):
             "order": NumberInput(attrs={"class": "form-control"})
         }
     
-class EducationCreateForm(ModelForm):
+class EducationItemCreateForm(ModelForm):
 
     class Meta:
-        model = Education
-        fields = ["institution", "speciality", "degree", "start_year", "end_year"]
+        model = EducationItem
+        fields = ["institution", "speciality", "city", "degree", "start_year", "end_year", "description"]
         widgets = {
             "institution": TextInput(attrs={"class": "form-control"}),
             "speciality": TextInput(attrs={"class": "form-control"}),
+            "city": TextInput(attrs={"class": "form-control"}),
             "degree": TextInput(attrs={"class": "form-control"}),
-            "start_year": NumberInput(attrs={"class": "form-control"}),
-            "end_year": NumberInput(attrs={"class": "form-control"}),
+            "start_year": DateInput(attrs={"type": "date", "class": "form-control"}),
+            "end_year": DateInput(attrs={"type": "date", "class": "form-control"}),
+            "description": TextInput(attrs={"class": "form-control"}),
         }
 
-class ExperienceCreateForm(ModelForm):
+class ExperienceItemCreateForm(ModelForm):
 
     class Meta:
-        model = Experience
-        fields = ["company", "position", "description", "why_fired", "start_date", "end_date"]
+        model = ExperienceItem
+        fields = ["company", "position", "city", "why_fired", "start_date", "end_date", "description"]
         widgets = {
             "company": TextInput(attrs={"class": "form-control"}),
             "position": TextInput(attrs={"class": "form-control"}),
-            "description": TextInput(attrs={"class": "form-control"}),
+            "city": TextInput(attrs={"class": "form-control"}),
             "why_fired": TextInput(attrs={"class": "form-control"}),
             "start_date": DateInput(attrs={"type": "date", "class": "form-control"}),
             "end_date": DateInput(attrs={"type": "date", "class": "form-control"}),
+            "description": TextInput(attrs={"class": "form-control"}),
         }
 
-class SkillCreateForm(ModelForm):
-    
+class SkillItemCreateForm(ModelForm):
     class Meta:
-        model = Skill
-        fields = ["name", "section"]
+        model = SkillItem
+        fields = ["name"]
         widgets = {
             "name": TextInput(attrs={"class": "form-control"}),
-            "section": Select(attrs={"class": "form-control"}),
         }
-
-    
+        
