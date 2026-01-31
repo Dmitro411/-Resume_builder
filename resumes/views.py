@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import ResumeCreateForm, ResumeUpdateForm, ResumeSectionCreateForm, EducationCreateForm, ExperienceCreateForm, SkillCreateForm
+from .forms import ResumeCreateForm, ResumeUpdateForm, ResumeSectionCreateForm, EducationItemCreateForm, ExperienceItemCreateForm, SkillItemCreateForm
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from resumes import models, forms
 from django.urls import reverse, reverse_lazy
@@ -19,13 +19,29 @@ class ResumeCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+
+        DEFAULT_SECTIONS = [
+            "Освіта",
+            "Досвід роботи",
+            "Навички",
+            "Про себе",
+        ]
+
+        for i, title in enumerate(DEFAULT_SECTIONS):
+            models.ResumeSection.objects.create(
+                resume=self.object,
+                title=title,
+                order=i
+            )
+
+        return response
 
 @login_required
 def resume_detail_view(request, pk):
     if request.method == 'GET':
         resume = models.Resume.objects.get(pk=pk, user=request.user)
-        sections = resume.sections.all()
+        sections = resume.sections.all().order_by('order')
         context = {}
         context['resume'] = resume
         context['sections'] = sections
@@ -50,7 +66,7 @@ class ResumeSectionCreateView(CreateView):
     template_name = "resumes/resume_section_create.html"
  
     def get_success_url(self):
-        return reverse("resume-detail", kwargs={"pk": self.object.pk})
+        return reverse("resume-detail", kwargs={"pk": self.object.resume.pk})
 
     def form_valid(self, form):
         resume_id = self.kwargs["resume_pk"]

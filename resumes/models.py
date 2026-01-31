@@ -25,24 +25,36 @@ class ResumeSection(models.Model):
     def __str__(self):
         return self.title
 
-class Education(ResumeSection):
-    institution = models.CharField(max_length=100, verbose_name="Установа")
+class EducationItem(models.Model):
+    section = models.ForeignKey(ResumeSection, on_delete=models.CASCADE, verbose_name="Секція")
+    institution = models.CharField(max_length=100, verbose_name="Навчальний заклад")
     speciality = models.CharField(max_length=100, verbose_name="Спеціальність")
-    degree = models.CharField(max_length=255, verbose_name="Степень")
-    start_year = models.PositiveIntegerField(verbose_name="Дата початку навчання")
-    end_year = models.PositiveIntegerField(blank=True, null=True, verbose_name="Дата закінчення навчання")
+    city = models.CharField(max_length=100, verbose_name="Місто")
+    degree = models.CharField(max_length=255, verbose_name="Ступінь")
+    start_year = models.DateField(verbose_name="Дата початку навчання")
+    end_year = models.DateField(blank=True, null=True, verbose_name="Дата закінчення навчання")
+    description = models.TextField(max_length=1000, verbose_name="Опис")
 
-class Experience(ResumeSection):
+    def __str__(self):
+        return f"{self.institution} - {self.speciality}"
+
+class ExperienceItem(models.Model):
+    section = models.ForeignKey(ResumeSection, on_delete=models.CASCADE, verbose_name="Секція")
     company = models.CharField(max_length=100, verbose_name="Компанія")
     position = models.CharField(max_length=100, verbose_name="Посада")
-    description = models.TextField(max_length=1000, verbose_name="Обов'язки")
+    city = models.CharField(max_length=100, verbose_name="Місто")
     why_fired = models.CharField(max_length=100, verbose_name="Причина звілнення")
     start_date = models.DateField(verbose_name="Дата початку роботи")
     end_date = models.DateField(blank=True, null=True, verbose_name="Дата звільнення")
+    description = models.TextField(max_length=1000, verbose_name="Опис")
 
-class Skill(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Назва скіла")
-    section = models.ForeignKey(ResumeSection, on_delete=models.CASCADE, verbose_name="Секція")\
-    
     def __str__(self):
-        return f"{self.name} - {self.section.title}"
+        return f"{self.company} - {self.position}"
+
+
+class SkillItem(models.Model):
+    section = models.ForeignKey(ResumeSection, on_delete=models.CASCADE, verbose_name="Секція")
+    name = models.CharField(max_length=100, verbose_name="Назва скіла")
+
+    def __str__(self):
+        return self.name
