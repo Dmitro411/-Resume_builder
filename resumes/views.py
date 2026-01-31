@@ -22,6 +22,7 @@ class ResumeCreateView(CreateView):
         response = super().form_valid(form)
 
         DEFAULT_SECTIONS = [
+            "Приватна інформація",
             "Освіта",
             "Досвід роботи",
             "Навички",
@@ -42,10 +43,13 @@ def resume_detail_view(request, pk):
     if request.method == 'GET':
         resume = models.Resume.objects.get(pk=pk, user=request.user)
         sections = resume.sections.all().order_by('order')
+        personal_info_form = forms.PrivateInformationItemCreateForm()
         context = {}
         context['resume'] = resume
         context['sections'] = sections
+        context['personal_info_form'] = personal_info_form
         return render(request, "resumes/resume_detail.html", context=context)
+    
     
 
 # class ResumeDetailView(DetailView):

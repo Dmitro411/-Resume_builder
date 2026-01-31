@@ -1,5 +1,5 @@
 from django.forms import ModelForm, Form, DateInput, TextInput, FileInput, CheckboxInput, NumberInput, Select
-from .models import Resume, ResumeSection, EducationItem, ExperienceItem, SkillItem
+from .models import PrivateInformationItem, Resume, ResumeSection, EducationItem, ExperienceItem, SkillItem
 
 class ResumeCreateForm(ModelForm):
     
@@ -69,3 +69,20 @@ class SkillItemCreateForm(ModelForm):
             "name": TextInput(attrs={"class": "form-control"}),
         }
         
+class PrivateInformationItemCreateForm(ModelForm):
+    class Meta:
+        model = PrivateInformationItem
+        fields = ["first_name", "last_name", "date_of_birth", "avatar", "phone", "email", "city", "gender", "marial", "github_link", "other_link"]
+        widgets = {
+            "first_name": TextInput(attrs={"class": "form-control"}),
+            "last_name": TextInput(attrs={"class": "form-control"}),
+            "date_of_birth": DateInput(attrs={"class": "form-control"}),
+            "avatar": FileInput(attrs={"class": "form-control"}),
+            "phone": TextInput(attrs={"class": "form-control"}),
+            "email": TextInput(attrs={"class": "form-control"}),
+            "city": TextInput(attrs={"class": "form-control"}),
+            "gender": Select(attrs={"class": "form-control"}),
+            "marial": Select(attrs={"class": "form-control"}),
+            "github_link": TextInput(attrs={"class": "form-control"}),
+            "other_link": TextInput(attrs={"class": "form-control"}),
+        }
