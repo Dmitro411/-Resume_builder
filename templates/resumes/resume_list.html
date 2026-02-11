@@ -12,11 +12,49 @@
     <p class="card-text"><strong>Оновлено:</strong> {{ resume.updated_at|date:"Y-m-d" }}</p>
   </div>
   <div class="card-footer text-body-secondary">
-    <a href="{% url 'resume-detail' resume.pk %}" class="btn btn-primary">Переглянути резюме</a>
-    <a href="#" class="btn btn-warning">Редагувати резюме</a>
-    <a href="#" class="btn btn-danger">Вилучити резюме</a>
+    <a href="{% url 'resume-detail' resume.pk %}" class="btn btn-primary">Переглянути</a>
+    <a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateResumeModal{{ resume.pk }}">Редагувати</a>
+    <a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ resume.pk }}">Видалити</a>
   </div>
 </div>
 
+<div class="modal" id="deleteModal{{ resume.pk }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Видалити {{ resume.title }}?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
+        <form method="POST" action="{% url 'resume-delete' resume.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">Видалити</button>
+        </form>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="updateResumeModal{{ resume.pk }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'resume-update' resume.pk %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title">Редагування резюме</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {{ resume.update_form.as_p }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
+          <button type="submit" class="btn btn-primary">Зберегти</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 {% endfor %}
 {% endblock %}

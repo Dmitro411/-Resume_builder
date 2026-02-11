@@ -6,7 +6,7 @@
     <h2>Створити секцію резюме</h2>
     {{ form.as_p }}
     <button type="submit" class="btn btn-success btn-lg">Створити</button>
-    <a href="#" type="button" class="btn btn-danger btn-lg">Відмінити</a>
+    <a href="{% url 'resume-detale' %}" type="button" class="btn btn-danger btn-lg" >Відмінити</a>
 </form>
 
 {% endblock %}

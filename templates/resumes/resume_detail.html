@@ -1,27 +1,84 @@
 {% extends "base.html" %}
-{% block title %} Моє резюме {% endblock  %}
+{% block title %}Моє резюме{% endblock %}
 {% block content %}
 <h1>{{ resume.title }}</h1>
+
 {% for section in sections %}
 <div class="card text-center mb-3">
   <div class="card-header">
     <h3>{{ section.title }}</h3>
   </div>
-  {% if section.items.all %}
-    <div class="card-body">
-      {% for item in section.items.all %}
-      <p class="card-text">{{ item.name|linebreaks }}</p>
+
+  <div class="card-body">
+    {# Приватна інформація #}
+    {% if section.title == "Приватна інформація" %}
+      {% for item in section.privateinformationitem.all %}
+      <div class="mb-4 p-3 border rounded shadow-sm">
+        <div class="d-flex align-items-center mb-2">
+          {% if item.avatar %}
+          <img src="{{ item.avatar.url }}" alt="Avatar" class="rounded-circle me-3" width="60" height="60">
+          {% endif %}
+          {% if item.first_name or item.last_name %}
+          <h5 class="mb-0">{{ item.first_name }} {{ item.last_name }}</h5>
+          {% endif %}
+        </div>
+        <ul class="list-unstyled mb-0">
+          {% if item.date_of_birth %}<li><strong>Дата народження:</strong> {{ item.date_of_birth }}</li>{% endif %}
+          {% if item.phone %}<li><strong>Телефон:</strong> {{ item.phone }}</li>{% endif %}
+          {% if item.email %}<li><strong>Email:</strong> {{ item.email }}</li>{% endif %}
+          {% if item.city %}<li><strong>Місто:</strong> {{ item.city }}</li>{% endif %}
+          {% if item.gender %}<li><strong>Стать:</strong> {{ item.gender }}</li>{% endif %}
+          {% if item.marital %}<li><strong>Сімейний стан:</strong> {{ item.marital }}</li>{% endif %}
+          {% if item.github_link %}<li><strong>GitHub:</strong> <a href="{{ item.github_link }}" target="_blank">{{ item.github_link }}</a></li>{% endif %}
+          {% if item.other_link %}<li><strong>Інші посилання:</strong> <a href="{{ item.other_link }}" target="_blank">{{ item.other_link }}</a></li>{% endif %}
+        </ul>
+      </div>
       {% endfor %}
-    </div>
-  {% endif %}
-    <div class="card-footer text-body-secondary">
-      <a href="#" class="btn btn-primary">Додати {{ section.title }}</a>
-    </div>
+
+    {# Освіта #}
+    {% elif section.title == "Освіта" %}
+      {% for item in section.educationitem.all %}
+      <div class="mb-4 p-3 border rounded shadow-sm">
+        <div class="d-flex align-items-center mb-2">
+          {% if item.avatar %}
+          <img src="{{ item.avatar.url }}" alt="Avatar" class="rounded-circle me-3" width="60" height="60">
+          {% endif %}
+          {% if item.first_name or item.last_name %}
+          <h5 class="mb-0">{{ item.first_name }} {{ item.last_name }}</h5>
+          {% endif %}
+        </div>
+        <ul class="list-unstyled mb-0">
+          {% if item.section %}<li><strong>Секція:</strong> {{ item.section }}</li>{% endif %}
+          {% if item.institution %}<li><strong>Навчальний заклад:</strong> {{ item.institution }}</li>{% endif %}
+          {% if item.speciality %}<li><strong>Спеціальність:</strong> {{ item.speciality }}</li>{% endif %}
+          {% if item.city %}<li><strong>Місто:</strong> {{ item.city }}</li>{% endif %}
+          {% if item.degree %}<li><strong>Ступінь:</strong> {{ item.degree }}</li>{% endif %}
+          {% if item.start_year %}<li><strong>Дата початку навчання:</strong> {{ item.start_year }}</li>{% endif %}
+          {% if item.end_year %}<li><strong>Дата закінчення навчання:</strong> {{ item.end_year }}</li>{% endif %}
+          {% if item.description %}<li><strong>Опис:</strong> {{ item.description }}</li>{% endif %}
+        </ul>
+      </div>
+      {% endfor %}
+
+    {# Додаткові секції можна додавати тут, з власним related_name #}
+    {% endif %}
+  </div>
+
+  <div class="card-footer text-body-secondary">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal{{ section.pk }}">
+      Додати {{ section.title }}
+    </button>
+  </div>
 </div>
 {% endfor %}
+
+
+
+
+
 <a type="button" href="{% url 'resume-section-create' resume.pk %}" class="btn btn-success">Додати секцію</a>
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPersonalInfo" data-bs-whatever="@fat">Додати</button>
-<div class="modal fade" id="addPersonalInfo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+{% comment %} модальне вікно, персональна інформація {% endcomment %}
+<div class="modal fade" id="personalInfoModal{{ section.pk }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -29,20 +86,47 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form method="POST">
+        <form method="POST" action="{% url 'resume-personal-info-create' resume.pk %}">
           {% csrf_token %}
           {{ personal_info_form.as_div }}
           {% comment %} <div class="mb-3">
             <label for="message-text" class="col-form-label">Message:</label>
             <textarea class="form-control" id="message-text"></textarea>
           </div> {% endcomment %}
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Додати</button>
+          </div>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Додати</button>
       </div>
     </div>
   </div>
 </div>
+
+{% comment %} модальне вікно, Освіта{% endcomment %}
+<div class="modal fade" id="educationModal{{ section.pk }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Освіта</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{% url 'resume-education-create' resume.pk %}">
+          {% csrf_token %}
+          {{ education_form.as_div }}
+          {% comment %} <div class="mb-3">
+            <label for="message-text" class="col-form-label">Message:</label>
+            <textarea class="form-control" id="message-text"></textarea>
+          </div> {% endcomment %}
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Додати</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
