@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from .forms import ResumeCreateForm, ResumeUpdateForm, ResumeSectionCreateForm, EducationItemCreateForm, ExperienceItemCreateForm, SkillItemCreateForm
+from django.shortcuts import get_object_or_404, redirect, render
+from .forms import ResumeForm, ResumeSectionCreateForm, EducationItemCreateForm, ExperienceItemCreateForm, SkillItemCreateForm, PrivateInformationItemCreateForm
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from resumes import models, forms
 from django.urls import reverse, reverse_lazy
@@ -10,10 +10,19 @@ class ResumeListView(ListView):
     context_object_name = "resumes"
     template_name = "resumes/resume_list.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # додаємо форму безпосередньо в кожен об'єкт
+        for resume in context["resumes"]:
+            resume.update_form = ResumeForm(instance=resume)
+
+        return context
+        
+
 
 class ResumeCreateView(CreateView):
     model = models.Resume
-    form_class = ResumeCreateForm
+    form_class = ResumeForm
     template_name = "resumes/resume_create.html"
     success_url = reverse_lazy("resume-list")
 
@@ -22,6 +31,7 @@ class ResumeCreateView(CreateView):
         response = super().form_valid(form)
 
         DEFAULT_SECTIONS = [
+            "Приватна інформація",
             "Освіта",
             "Досвід роботи",
             "Навички",
@@ -42,10 +52,13 @@ def resume_detail_view(request, pk):
     if request.method == 'GET':
         resume = models.Resume.objects.get(pk=pk, user=request.user)
         sections = resume.sections.all().order_by('order')
+        personal_info_form = forms.PrivateInformationItemCreateForm()
         context = {}
         context['resume'] = resume
         context['sections'] = sections
+        context['personal_info_form'] = personal_info_form
         return render(request, "resumes/resume_detail.html", context=context)
+    
     
 
 # class ResumeDetailView(DetailView):
@@ -75,14 +88,47 @@ class ResumeSectionCreateView(CreateView):
         form.instance.resume = resume
         return super().form_valid(form)
     
+class ResumePersonalInfoCreateView(CreateView):
+    model = models.PrivateInformationItem
+    form_class = PrivateInformationItemCreateForm
 
-class ResumeUpdateView(UpdateView):
-    pass
-    # model = models.Resume
-    # form_class = Resume
+    def get_success_url(self):
+        return reverse("resume-detail", kwargs={"pk": self.object.section.resume.pk})
+
+    def form_valid(self, form):
+        resume_id = self.kwargs["resume_pk"]
+        resume = models.Resume.objects.get(id=resume_id)
+        section = resume.sections.get(title="Приватна інформація")
+        form.instance.section = section
+
+        return super().form_valid(form)
+    
+class EducationItemCreateView(CreateView):
+    model = models.EducationItem
+    form_class = EducationItemCreateForm
+
+    def get_success_url(self):
+        return reverse("resume-detail", kwargs={"pk": self.object.section.resume.pk})
+
+    def form_valid(self, form):
+        resume_id = self.kwargs["resume_pk"]
+        resume = models.Resume.objects.get(id=resume_id)
+        section = resume.sections.get(title="Освіта")
+        form.instance.section = section
+
+        return super().form_valid(form)
+
+def resume_update_view(request, pk):
+    resume = get_object_or_404(models.Resume, pk = pk)
+    if request.method == 'POST':
+        update_form = ResumeForm(request.POST, instance=resume)
+        if update_form.is_valid():
+            update_form.save()
+    return redirect("resume-list")
 
 class ResumeDeleteView(DeleteView):
-    pass
+    model = models.Resume
+    success_url = reverse_lazy("resume-list")
 
 class ResumeSectionUpdateView(UpdateView):
     pass

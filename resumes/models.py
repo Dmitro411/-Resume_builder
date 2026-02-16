@@ -58,3 +58,33 @@ class SkillItem(models.Model):
 
     def __str__(self):
         return self.name
+
+class PrivateInformationItem(models.Model):
+    GENDER_CHOICES = [
+        ("-", "Не обрано"),
+        ("female", "Жіноча"),
+        ("male", "Чоловіча"),
+    ]
+    MARITAL_CHOICES = [
+        ("married", "Одружений"),
+        ("not_married", "Не одружений"),
+    ]
+    first_name = models.CharField(max_length=15, verbose_name="Ім'я")
+    last_name = models.CharField(max_length=15, verbose_name="Прізвище")
+    date_of_birth = models.DateField(null=True, blank=True, verbose_name="Дата народження")
+    avatar = models.ImageField(upload_to='resume_avatars/', null=True, blank=True, verbose_name="Аватар")
+    phone = models.CharField(max_length=20, blank=True, verbose_name="Телефон")
+    email = models.EmailField(verbose_name="Електронна адреса")
+    city = models.CharField(max_length=100, verbose_name="Місто проживання")
+    gender = models.CharField(max_length=9, choices=GENDER_CHOICES, verbose_name="Стать")
+    marial = models.CharField(max_length=15, choices=MARITAL_CHOICES, verbose_name="Сімейний стан")
+    github_link = models.URLField(max_length=300, blank=True, null=True, verbose_name="Посилання на Гітхаб")
+    other_link = models.URLField(max_length=300, blank=True, null=True, verbose_name="Посилання")
+    section = models.ForeignKey(ResumeSection, on_delete=models.CASCADE, verbose_name="Секція")
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - {self.section.pk}"
+
+    class Meta:
+        verbose_name = "Персональна інформація"
+        verbose_name_plural = "Персональна інформація"
