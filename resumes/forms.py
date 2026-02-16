@@ -68,4 +68,3 @@ class SkillItemCreateForm(ModelForm):
         widgets = {
             "name": TextInput(attrs={"class": "form-control"}),
         }
-        
