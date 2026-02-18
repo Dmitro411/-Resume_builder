@@ -54,11 +54,15 @@ def resume_detail_view(request, pk):
         sections = resume.sections.all().order_by('order')
         personal_info_form = forms.PrivateInformationItemCreateForm()
         education_form = forms.EducationItemCreateForm()
+        experiance_form = forms.ExperienceItemCreateForm()
+        skill_form = forms.SkillItemCreateForm()
         context = {}
         context['resume'] = resume
         context['sections'] = sections
         context['personal_info_form'] = personal_info_form
         context['education_form'] = education_form
+        context['experiance_form'] = experiance_form
+        context['skill_form'] = skill_form
         return render(request, "resumes/resume_detail.html", context=context)
     
 
@@ -121,6 +125,36 @@ class EducationItemCreateView(CreateView):
         resume_id = self.kwargs["resume_pk"]
         resume = models.Resume.objects.get(id=resume_id)
         section = resume.sections.get(title="Освіта")
+        form.instance.section = section
+
+        return super().form_valid(form)
+
+class ExperienceItemCreateView(CreateView):
+    model = models.ExperienceItem
+    form_class = ExperienceItemCreateForm
+
+    def get_success_url(self):
+        return reverse("resume-detail", kwargs={"pk": self.object.section.resume.pk})
+
+    def form_valid(self, form):
+        resume_id = self.kwargs["resume_pk"]
+        resume = models.Resume.objects.get(id=resume_id)
+        section = resume.sections.get(title="Досвід роботи")
+        form.instance.section = section
+
+        return super().form_valid(form)
+    
+class SkillItemCreateView(CreateView):
+    model = models.SkillItem
+    form_class = SkillItemCreateForm
+
+    def get_success_url(self):
+        return reverse("resume-detail", kwargs={"pk": self.object.section.resume.pk})
+
+    def form_valid(self, form):
+        resume_id = self.kwargs["resume_pk"]
+        resume = models.Resume.objects.get(id=resume_id)
+        section = resume.sections.get(title="Навички")
         form.instance.section = section
 
         return super().form_valid(form)

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import resume_detail_view, EducationItemCreateView, ResumeSectionCreateView, ResumeListView, ResumeCreateView, ResumeDeleteView, resume_update_view, ResumeSectionUpdateView, ResumeSectionDeleteView, ResumePersonalInfoCreateView
+from .views import resume_detail_view, EducationItemCreateView, ExperienceItemCreateView, SkillItemCreateView, ResumeSectionCreateView, ResumeListView, ResumeCreateView, ResumeDeleteView, resume_update_view, ResumeSectionUpdateView, ResumeSectionDeleteView, ResumePersonalInfoCreateView
 
 urlpatterns = [
     path('', ResumeListView.as_view(), name='resume-list'),
@@ -13,4 +13,6 @@ urlpatterns = [
     path('section/delete/', ResumeSectionDeleteView.as_view(), name='resume-section-delete'),
     path("resume/<int:resume_pk>/personal-info/create/", ResumePersonalInfoCreateView.as_view(), name="resume-personal-info-create"),
     path("resume/<int:resume_pk>/education/create/", EducationItemCreateView.as_view(), name="resume-education-create"),
+    path("resume/<int:resume_pk>/experiance/create/", ExperienceItemCreateView.as_view(), name="resume-experiance-create"),
+    path("resume/<int:resume_pk>/skill/create/", SkillItemCreateView.as_view(), name="resume-skill-create"),
 ]

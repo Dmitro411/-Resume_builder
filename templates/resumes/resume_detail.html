@@ -98,6 +98,52 @@
                         Додати
                     </button>
                 {% endif %}
+
+
+                {# Досвід роботи #}
+                {% if section.title == "Досвід роботи" %}
+                    {% for item in section.experienceitem_set.all %}
+                        <div class="mb-4 p-3 border rounded shadow-sm">
+                            <ul class="list-unstyled mb-0">
+                                {% if item.company %}
+                                    <li><strong>Компанія:</strong> {{ item.company }}</li>{% endif %}
+                                {% if item.position %}
+                                    <li><strong>Посада:</strong> {{ item.position }}</li>{% endif %}
+                                {% if item.city %}
+                                    <li><strong>Місто:</strong> {{ item.city }}</li>{% endif %}
+                                {% if item.why_fired %}
+                                    <li><strong>Причина звільнення:</strong> {{ item.why_fired }}</li>{% endif %}
+                                {% if item.start_date %}
+                                    <li><strong>Дата початку роботи:</strong> {{ item.start_year }}</li>{% endif %}
+                                {% if item.end_date %}
+                                    <li><strong>Дата закінчення роботи:</strong> {{ item.end_year }}</li>{% endif %}
+                                {% if item.description %}
+                                    <li><strong>Опис:</strong> {{ item.description }}</li>{% endif %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#experienceInfoModal">
+                        Додати
+                    </button>
+                {% endif %}
+
+                {# Навички #}
+                {% if section.title == "Навички" %}
+                    {% for item in section.skillitem_set.all %}
+                        <div class="mb-4 p-3 border rounded shadow-sm">
+                            <ul class="list-unstyled mb-0">
+                                {% if item.name %}
+                                    <li><h4> {{ item.name }}</h4></li>{% endif %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#skilllInfoModal">
+                        Додати
+                    </button>
+                {% endif %}
+
             </div>
 
         </div>
@@ -105,6 +151,7 @@
 
 
     <a type="button" href="{% url 'resume-section-create' resume.pk %}" class="btn btn-success">Додати секцію</a>
+
     {% comment %} модальне вікно, персональна інформація {% endcomment %}
     <div class="modal fade" id="personalInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
@@ -115,7 +162,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{% url 'resume-personal-info-create' resume.pk %}">
+                    <form method="POST" action="{% url 'resume-personal-info-create' resume.pk %}" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ personal_info_form.as_div }}
                         {% comment %} <div class="mb-3">
@@ -145,6 +192,60 @@
                     <form method="POST" action="{% url 'resume-education-create' resume.pk %}">
                         {% csrf_token %}
                         {{ education_form.as_div }}
+                        {% comment %} <div class="mb-3">
+            <label for="message-text" class="col-form-label">Message:</label>
+            <textarea class="form-control" id="message-text"></textarea>
+          </div> {% endcomment %}
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
+                            <button type="submit" class="btn btn-primary">Додати</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% comment %} модальне вікно, досвід роботи {% endcomment %}
+    <div class="modal fade" id="experienceInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Досвід роботи</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'resume-experiance-create' resume.pk %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ experiance_form.as_div }}
+                        {% comment %} <div class="mb-3">
+            <label for="message-text" class="col-form-label">Message:</label>
+            <textarea class="form-control" id="message-text"></textarea>
+          </div> {% endcomment %}
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
+                            <button type="submit" class="btn btn-primary">Додати</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% comment %} модальне вікно, навички {% endcomment %}
+    <div class="modal fade" id="skilllInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Навички</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'resume-skill-create' resume.pk %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ skill_form.as_div }}
                         {% comment %} <div class="mb-3">
             <label for="message-text" class="col-form-label">Message:</label>
             <textarea class="form-control" id="message-text"></textarea>
