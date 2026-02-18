@@ -67,7 +67,7 @@ class PrivateInformationItemCreateForm(ModelForm):
         widgets = {
             "first_name": TextInput(attrs={"class": "form-control"}),
             "last_name": TextInput(attrs={"class": "form-control"}),
-            "date_of_birth": DateInput(attrs={"class": "form-control"}),
+            "date_of_birth": DateInput(attrs={"type":"date", "class": "form-control"}),
             "avatar": FileInput(attrs={"class": "form-control"}),
             "phone": TextInput(attrs={"class": "form-control"}),
             "email": TextInput(attrs={"class": "form-control"}),

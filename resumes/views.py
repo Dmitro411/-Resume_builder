@@ -53,12 +53,13 @@ def resume_detail_view(request, pk):
         resume = models.Resume.objects.get(pk=pk, user=request.user)
         sections = resume.sections.all().order_by('order')
         personal_info_form = forms.PrivateInformationItemCreateForm()
+        education_form = forms.EducationItemCreateForm()
         context = {}
         context['resume'] = resume
         context['sections'] = sections
         context['personal_info_form'] = personal_info_form
+        context['education_form'] = education_form
         return render(request, "resumes/resume_detail.html", context=context)
-    
     
 
 # class ResumeDetailView(DetailView):
@@ -87,10 +88,11 @@ class ResumeSectionCreateView(CreateView):
 
         form.instance.resume = resume
         return super().form_valid(form)
-    
+
 class ResumePersonalInfoCreateView(CreateView):
     model = models.PrivateInformationItem
     form_class = PrivateInformationItemCreateForm
+    # template_name = "resumes/resume_detail.html"
 
     def get_success_url(self):
         return reverse("resume-detail", kwargs={"pk": self.object.section.resume.pk})
@@ -102,6 +104,11 @@ class ResumePersonalInfoCreateView(CreateView):
         form.instance.section = section
 
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        # Просто редіректимо назад на resume-detail навіть якщо форма не валідна
+        resume_id = self.kwargs.get("resume_pk")
+        return redirect("resume-detail", pk=resume_id)
     
 class EducationItemCreateView(CreateView):
     model = models.EducationItem
