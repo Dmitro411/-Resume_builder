@@ -1,263 +1,326 @@
-{% extends "base.html" %}
-{% block title %}Моє резюме{% endblock %}
+{% extends 'base.html' %}
+{% block title %}
+  Моє резюме
+{% endblock %}
 {% block content %}
-    <h1>{{ resume.title }}</h1>
+  <h1>{{ resume.title }}</h1>
 
-    {% for section in sections %}
-        <div class="card text-center mb-3">
-            <div class="card-header">
-                <h3>{{ section.title }}</h3>
-            </div>
+  {% for section in sections %}
+    <div class="card text-center mb-3">
+      <div class="card-header">
+        <h3>{{ section.title }}</h3>
+      </div>
 
-            <div class="card-body">
-                {# Приватна інформація #}
-                {% if section.title == "Приватна інформація" %}
-                    {% for item in section.privateinformationitem_set.all %}
-                        <div class="mb-4 p-3 border rounded shadow-sm">
-                            <div class="d-flex align-items-center mb-2">
-                                {% if item.avatar %}
-                                    <img src="{{ item.avatar.url }}" alt="Avatar" class="rounded-circle me-3" width="60"
-                                         height="60">
-                                {% endif %}
-                                {% if item.first_name or item.last_name %}
-                                    <h5 class="mb-0">{{ item.first_name }} {{ item.last_name }}</h5>
-                                {% endif %}
-                            </div>
-                            <ul class="list-unstyled mb-0">
-                                {% if item.date_of_birth %}
-                                    <li><strong>Дата народження:</strong> {{ item.date_of_birth }}</li>{% endif %}
-                                {% if item.phone %}
-                                    <li><strong>Телефон:</strong> {{ item.phone }}</li>{% endif %}
-                                {% if item.email %}
-                                    <li><strong>Email:</strong> {{ item.email }}</li>{% endif %}
-                                {% if item.city %}
-                                    <li><strong>Місто:</strong> {{ item.city }}</li>{% endif %}
-                                {% if item.gender %}
-                                    <li><strong>Стать:</strong> {{ item.get_gender_display }}</li>{% endif %}
-                                {% if item.marital %}
-                                    <li><strong>Сімейний стан:</strong> {{ item.marital }}</li>{% endif %}
-                                {% if item.github_link %}
-                                    <li><strong>GitHub:</strong> <a href="{{ item.github_link }}"
-                                                                    target="_blank">{{ item.github_link }}</a>
-                                    </li>{% endif %}
-                                {% if item.other_link %}
-                                    <li><strong>Інші посилання:</strong> <a href="{{ item.other_link }}"
-                                                                            target="_blank">{{ item.other_link }}</a>
-                                    </li>{% endif %}
-                            </ul>
-                        </div>
-                    {% endfor %}
-                    {% if section.privateinformationitem_set.all %}
-                        <button type="button" class="btn btn-warning" data-bs-toggle="modal"
-                                data-bs-target="#personalInfoModal">
-                            Редагувати
-                        </button>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#deletePersonalInfoModal">
-                            Видалити
-                        </button>
-                    {% else %}
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#personalInfoModal">
-                            Додати
-                        </button>
-                    {% endif %}
-
+      <div class="card-body">
+        {# Приватна інформація #}
+        {% if section.title == 'Приватна інформація' %}
+          {% for item in section.privateinformationitem_set.all %}
+            <div class="mb-4 p-3 border rounded shadow-sm">
+              <div class="d-flex align-items-center mb-2">
+                {% if item.avatar %}
+                  <img src="{{ item.avatar.url }}" alt="Avatar" class="rounded-circle me-3" width="60" height="60" />
                 {% endif %}
-
-
-                {# Освіта #}
-                {% if section.title == "Освіта" %}
-                    {% for item in section.educationitem_set.all %}
-                        <div class="mb-4 p-3 border rounded shadow-sm">
-                            <div class="d-flex align-items-center mb-2">
-                                {% if item.first_name or item.last_name %}
-                                    <h5 class="mb-0">{{ item.first_name }} {{ item.last_name }}</h5>
-                                {% endif %}
-                            </div>
-                            <ul class="list-unstyled mb-0">
-                                {% if item.institution %}
-                                    <li><strong>Навчальний заклад:</strong> {{ item.institution }}</li>{% endif %}
-                                {% if item.speciality %}
-                                    <li><strong>Спеціальність:</strong> {{ item.speciality }}</li>{% endif %}
-                                {% if item.city %}
-                                    <li><strong>Місто:</strong> {{ item.city }}</li>{% endif %}
-                                {% if item.degree %}
-                                    <li><strong>Ступінь:</strong> {{ item.degree }}</li>{% endif %}
-                                {% if item.start_year %}
-                                    <li><strong>Дата початку навчання:</strong> {{ item.start_year }}</li>{% endif %}
-                                {% if item.end_year %}
-                                    <li><strong>Дата закінчення навчання:</strong> {{ item.end_year }}</li>{% endif %}
-                                {% if item.description %}
-                                    <li><strong>Опис:</strong> {{ item.description }}</li>{% endif %}
-                            </ul>
-                        </div>
-                    {% endfor %}
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#educationInfoModal">
-                        Додати
-                    </button>
+                {% if item.first_name or item.last_name %}
+                  <h5 class="mb-0">{{ item.first_name }} {{ item.last_name }}</h5>
                 {% endif %}
-
-
-                {# Досвід роботи #}
-                {% if section.title == "Досвід роботи" %}
-                    {% for item in section.experienceitem_set.all %}
-                        <div class="mb-4 p-3 border rounded shadow-sm">
-                            <ul class="list-unstyled mb-0">
-                                {% if item.company %}
-                                    <li><strong>Компанія:</strong> {{ item.company }}</li>{% endif %}
-                                {% if item.position %}
-                                    <li><strong>Посада:</strong> {{ item.position }}</li>{% endif %}
-                                {% if item.city %}
-                                    <li><strong>Місто:</strong> {{ item.city }}</li>{% endif %}
-                                {% if item.why_fired %}
-                                    <li><strong>Причина звільнення:</strong> {{ item.why_fired }}</li>{% endif %}
-                                {% if item.start_date %}
-                                    <li><strong>Дата початку роботи:</strong> {{ item.start_year }}</li>{% endif %}
-                                {% if item.end_date %}
-                                    <li><strong>Дата закінчення роботи:</strong> {{ item.end_year }}</li>{% endif %}
-                                {% if item.description %}
-                                    <li><strong>Опис:</strong> {{ item.description }}</li>{% endif %}
-                            </ul>
-                        </div>
-                    {% endfor %}
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#experienceInfoModal">
-                        Додати
-                    </button>
+              </div>
+              <ul class="list-unstyled mb-0">
+                {% if item.date_of_birth %}
+                  <li>
+                    <strong>Дата народження:</strong> {{ item.date_of_birth }}
+                  </li>
                 {% endif %}
-
-                {# Навички #}
-                {% if section.title == "Навички" %}
-                    {% for item in section.skillitem_set.all %}
-                        <div class="mb-4 p-3 border rounded shadow-sm">
-                            <ul class="list-unstyled mb-0">
-                                {% if item.name %}
-                                    <li><h4> {{ item.name }}</h4></li>{% endif %}
-                            </ul>
-                        </div>
-                    {% endfor %}
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#skilllInfoModal">
-                        Додати
-                    </button>
+                {% if item.phone %}
+                  <li>
+                    <strong>Телефон:</strong> {{ item.phone }}
+                  </li>
                 {% endif %}
-
+                {% if item.email %}
+                  <li>
+                    <strong>Email:</strong> {{ item.email }}
+                  </li>
+                {% endif %}
+                {% if item.city %}
+                  <li>
+                    <strong>Місто:</strong> {{ item.city }}
+                  </li>
+                {% endif %}
+                {% if item.gender %}
+                  <li>
+                    <strong>Стать:</strong> {{ item.get_gender_display }}
+                  </li>
+                {% endif %}
+                {% if item.marital %}
+                  <li>
+                    <strong>Сімейний стан:</strong> {{ item.marital }}
+                  </li>
+                {% endif %}
+                {% if item.github_link %}
+                  <li>
+                    <strong>GitHub:</strong> <a href="{{ item.github_link }}" target="_blank">{{ item.github_link }}</a>
+                  </li>
+                {% endif %}
+                {% if item.other_link %}
+                  <li>
+                    <strong>Інші посилання:</strong> <a href="{{ item.other_link }}" target="_blank">{{ item.other_link }}</a>
+                  </li>
+                {% endif %}
+              </ul>
             </div>
+          {% endfor %}
+          {% if section.privateinformationitem_set.all %}
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#personalInfoModal">Редагувати</button>
+            {% comment %} <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePersonalInfoModal{{ item.pk }}">Видалити</button> {% endcomment %}
+            <a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePersonalInfoModal{{ item.pk }}">Видалити</a>
+            {% else %}
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#personalInfoModal">Додати</button>
+          {% endif %}
+        {% endif %}
 
-        </div>
-    {% endfor %}
+        {# Освіта #}
+        {% if section.title == 'Освіта' %}
+          {% for item in section.educationitem_set.all %}
+            <div class="mb-4 p-3 border rounded shadow-sm">
+              <div class="d-flex align-items-center mb-2">
+                {% if item.first_name or item.last_name %}
+                  <h5 class="mb-0">{{ item.first_name }} {{ item.last_name }}</h5>
+                {% endif %}
+              </div>
+              <ul class="list-unstyled mb-0">
+                {% if item.institution %}
+                  <li>
+                    <strong>Навчальний заклад:</strong> {{ item.institution }}
+                  </li>
+                {% endif %}
+                {% if item.speciality %}
+                  <li>
+                    <strong>Спеціальність:</strong> {{ item.speciality }}
+                  </li>
+                {% endif %}
+                {% if item.city %}
+                  <li>
+                    <strong>Місто:</strong> {{ item.city }}
+                  </li>
+                {% endif %}
+                {% if item.degree %}
+                  <li>
+                    <strong>Ступінь:</strong> {{ item.degree }}
+                  </li>
+                {% endif %}
+                {% if item.start_year %}
+                  <li>
+                    <strong>Дата початку навчання:</strong> {{ item.start_year }}
+                  </li>
+                {% endif %}
+                {% if item.end_year %}
+                  <li>
+                    <strong>Дата закінчення навчання:</strong> {{ item.end_year }}
+                  </li>
+                {% endif %}
+                {% if item.description %}
+                  <li>
+                    <strong>Опис:</strong> {{ item.description }}
+                  </li>
+                {% endif %}
+              </ul>
 
-
-    <a type="button" href="{% url 'resume-section-create' resume.pk %}" class="btn btn-success">Додати секцію</a>
-
-    {% comment %} модальне вікно, персональна інформація {% endcomment %}
-    <div class="modal fade" id="personalInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Персональна інформація</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" action="{% url 'resume-personal-info-create' resume.pk %}" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ personal_info_form.as_div }}
-                        {% comment %} <div class="mb-3">
-            <label for="message-text" class="col-form-label">Message:</label>
-            <textarea class="form-control" id="message-text"></textarea>
-          </div> {% endcomment %}
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
-                            <button type="submit" class="btn btn-primary">Додати</button>
-                        </div>
-                    </form>
-                </div>
+              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#personalInfoModal">Редагувати</button>
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePersonalInfoModal">Видалити</button>
             </div>
-        </div>
+          {% endfor %}
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#educationInfoModal">Додати</button>
+        {% endif %}
+
+        {# Досвід роботи #}
+        {% if section.title == 'Досвід роботи' %}
+          {% for item in section.experienceitem_set.all %}
+            <div class="mb-4 p-3 border rounded shadow-sm">
+              <ul class="list-unstyled mb-0">
+                {% if item.company %}
+                  <li>
+                    <strong>Компанія:</strong> {{ item.company }}
+                  </li>
+                {% endif %}
+                {% if item.position %}
+                  <li>
+                    <strong>Посада:</strong> {{ item.position }}
+                  </li>
+                {% endif %}
+                {% if item.city %}
+                  <li>
+                    <strong>Місто:</strong> {{ item.city }}
+                  </li>
+                {% endif %}
+                {% if item.why_fired %}
+                  <li>
+                    <strong>Причина звільнення:</strong> {{ item.why_fired }}
+                  </li>
+                {% endif %}
+                {% if item.start_date %}
+                  <li>
+                    <strong>Дата початку роботи:</strong> {{ item.start_year }}
+                  </li>
+                {% endif %}
+                {% if item.end_date %}
+                  <li>
+                    <strong>Дата закінчення роботи:</strong> {{ item.end_year }}
+                  </li>
+                {% endif %}
+                {% if item.description %}
+                  <li>
+                    <strong>Опис:</strong> {{ item.description }}
+                  </li>
+                {% endif %}
+              </ul>
+              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#personalInfoModal">Редагувати</button>
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePersonalInfoModal">Видалити</button>
+            </div>
+          {% endfor %}
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#experienceInfoModal">Додати</button>
+        {% endif %}
+
+        {# Навички #}
+        {% if section.title == 'Навички' %}
+          {% for item in section.skillitem_set.all %}
+            <div class="mb-4 p-3 border rounded shadow-sm">
+              <ul class="list-unstyled mb-0">
+                {% if item.name %}
+                  <li>
+                    <h4>{{ item.name }}</h4>
+                  </li>
+                {% endif %}
+              </ul>
+              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#personalInfoModal">Редагувати</button>
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePersonalInfoModal">Видалити</button>
+            </div>
+          {% endfor %}
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#skilllInfoModal">Додати</button>
+        {% endif %}
+      </div>
     </div>
+  {% endfor %}
 
-    {% comment %} модальне вікно, Освіта{% endcomment %}
-    <div class="modal fade" id="educationInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Освіта</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" action="{% url 'resume-education-create' resume.pk %}">
-                        {% csrf_token %}
-                        {{ education_form.as_div }}
-                        {% comment %} <div class="mb-3">
-            <label for="message-text" class="col-form-label">Message:</label>
-            <textarea class="form-control" id="message-text"></textarea>
-          </div> {% endcomment %}
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
-                            <button type="submit" class="btn btn-primary">Додати</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+  <a type="button" href="{% url 'resume-section-create' resume.pk %}" class="btn btn-success">Додати секцію</a>
+
+  {% comment %}модальне вікно, персональна інформація{% endcomment %}
+  <div class="modal fade" id="personalInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Персональна інформація</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-    </div>
-
-    {% comment %} модальне вікно, досвід роботи {% endcomment %}
-    <div class="modal fade" id="experienceInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Досвід роботи</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" action="{% url 'resume-experiance-create' resume.pk %}" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ experiance_form.as_div }}
-                        {% comment %} <div class="mb-3">
-            <label for="message-text" class="col-form-label">Message:</label>
-            <textarea class="form-control" id="message-text"></textarea>
-          </div> {% endcomment %}
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
-                            <button type="submit" class="btn btn-primary">Додати</button>
-                        </div>
-                    </form>
-                </div>
+        <div class="modal-body">
+          <form method="POST" action="{% url 'resume-personal-info-create' resume.pk %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ personal_info_form.as_div }}
+            {% comment %} <div class="mb-3">
+              <label for="message-text" class="col-form-label">Message:</label>
+              <textarea class="form-control" id="message-text"></textarea>
+            </div> {% endcomment %}
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
+              <button type="submit" class="btn btn-primary">Додати</button>
             </div>
+          </form>
         </div>
+      </div>
     </div>
+  </div>
 
-    {% comment %} модальне вікно, навички {% endcomment %}
-    <div class="modal fade" id="skilllInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Навички</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" action="{% url 'resume-skill-create' resume.pk %}" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ skill_form.as_div }}
-                        {% comment %} <div class="mb-3">
-            <label for="message-text" class="col-form-label">Message:</label>
-            <textarea class="form-control" id="message-text"></textarea>
-          </div> {% endcomment %}
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
-                            <button type="submit" class="btn btn-primary">Додати</button>
-                        </div>
-                    </form>
-                </div>
+  {% comment %}модальне вікно, Освіта{% endcomment %}
+  <div class="modal fade" id="educationInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Освіта</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="{% url 'resume-education-create' resume.pk %}">
+            {% csrf_token %}
+            {{ education_form.as_div }}
+            {% comment %} <div class="mb-3">
+              <label for="message-text" class="col-form-label">Message:</label>
+              <textarea class="form-control" id="message-text"></textarea>
+            </div> {% endcomment %}
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
+              <button type="submit" class="btn btn-primary">Додати</button>
             </div>
+          </form>
         </div>
+      </div>
     </div>
+  </div>
 
+  {% comment %}модальне вікно, досвід роботи{% endcomment %}
+  <div class="modal fade" id="experienceInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Досвід роботи</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="{% url 'resume-experiance-create' resume.pk %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ experiance_form.as_div }}
+            {% comment %} <div class="mb-3">
+              <label for="message-text" class="col-form-label">Message:</label>
+              <textarea class="form-control" id="message-text"></textarea>
+            </div> {% endcomment %}
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
+              <button type="submit" class="btn btn-primary">Додати</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% comment %}модальне вікно, навички{% endcomment %}
+  <div class="modal fade" id="skilllInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Навички</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="{% url 'resume-skill-create' resume.pk %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ skill_form.as_div }}
+            {% comment %} <div class="mb-3">
+              <label for="message-text" class="col-form-label">Message:</label>
+              <textarea class="form-control" id="message-text"></textarea>
+            </div> {% endcomment %}
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
+              <button type="submit" class="btn btn-primary">Додати</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="deletePersonalInfoModal{{ item.pk }}" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Видалити?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Відміна</button>
+          <form method="POST" action="{% url 'personal-info-item-delete' item.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">Видалити</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
