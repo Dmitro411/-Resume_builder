@@ -187,3 +187,9 @@ def delete_education_item_view(request, pk):
         resume_pk = item.section.resume.pk
         item.delete()
         return redirect("resume-detail", pk=resume_pk)
+
+def delete_experience_item_view(request, pk):
+    pass
+
+def delete_skill_item_view(request, pk):
+    pass

@@ -125,7 +125,10 @@
               <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal" data-item-type="education" data-item-id="{{ item.pk }}">Редагувати</button>
               <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'education-item-delete' item.pk %}">Видалити</button>
             </div>
+            {% empty %}
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#educationInfoModal">Додати</button>
           {% endfor %}
+          
         {% endif %}
 
         {# Досвід роботи #}
@@ -194,6 +197,7 @@
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#skilllInfoModal">Додати</button>
         {% endif %}
       </div>
+    </div>
   {% endfor %}
 
   <a type="button" href="{% url 'resume-section-create' resume.pk %}" class="btn btn-success">Додати секцію</a>
