@@ -1,18 +1,19 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import resume_detail_view, delete_personal_info_item_view, EducationItemCreateView, ExperienceItemCreateView, SkillItemCreateView, ResumeSectionCreateView, ResumeListView, ResumeCreateView, ResumeDeleteView, resume_update_view, ResumeSectionUpdateView, ResumePersonalInfoCreateView
+from .views import delete_education_item_view, resume_detail_view, delete_personal_info_item_view, EducationItemCreateView, ExperienceItemCreateView, SkillItemCreateView, ResumeSectionCreateView, ResumeListView, ResumeCreateView, ResumeDeleteView, resume_update_view, ResumeSectionUpdateView, ResumePersonalInfoCreateView
 
 urlpatterns = [
     path('', ResumeListView.as_view(), name='resume-list'),
     path('<int:pk>', resume_detail_view, name='resume-detail'),
     path('create/', ResumeCreateView.as_view(), name='resume-create'),
     path('update/<int:pk>', resume_update_view, name='resume-update'),
-    path('delete/<int:pk>', ResumeDeleteView.as_view(), name='resume-delete'),
-    path('personal-info-item/delete/<int:pk>', delete_personal_info_item_view, name='personal-info-item-delete'),
     path('section/create/<int:resume_pk>', ResumeSectionCreateView.as_view(), name='resume-section-create'),
     path('section/update/', ResumeSectionUpdateView.as_view(), name='resume-section-update'),
     path("resume/<int:resume_pk>/personal-info/create/", ResumePersonalInfoCreateView.as_view(), name="resume-personal-info-create"),
     path("resume/<int:resume_pk>/education/create/", EducationItemCreateView.as_view(), name="resume-education-create"),
     path("resume/<int:resume_pk>/experiance/create/", ExperienceItemCreateView.as_view(), name="resume-experiance-create"),
     path("resume/<int:resume_pk>/skill/create/", SkillItemCreateView.as_view(), name="resume-skill-create"),
+    path('delete/<int:pk>', ResumeDeleteView.as_view(), name='resume-delete'),
+    path('personal-info-item/delete/<int:pk>', delete_personal_info_item_view, name='personal-info-item-delete'),
+    path('education-item/delete/<int:pk>', delete_education_item_view, name='education-item-delete'),
 ]

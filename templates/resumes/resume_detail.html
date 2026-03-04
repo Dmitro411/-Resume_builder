@@ -66,15 +66,13 @@
                   </li>
                 {% endif %}
               </ul>
+              
+              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#personalInfoModal" data-item-id="{{ item.pk }}">Редагувати</button>
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'personal-info-item-delete' item.pk %}">Видалити</button>
             </div>
-          {% endfor %}
-          {% if section.privateinformationitem_set.all %}
-            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#personalInfoModal">Редагувати</button>
-            {% comment %} <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePersonalInfoModal{{ item.pk }}">Видалити</button> {% endcomment %}
-            <a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePersonalInfoModal{{ item.pk }}">Видалити</a>
-            {% else %}
+          {% empty %}
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#personalInfoModal">Додати</button>
-          {% endif %}
+          {% endfor %}
         {% endif %}
 
         {# Освіта #}
@@ -124,11 +122,10 @@
                 {% endif %}
               </ul>
 
-              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#personalInfoModal">Редагувати</button>
-              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePersonalInfoModal">Видалити</button>
+              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal" data-item-type="education" data-item-id="{{ item.pk }}">Редагувати</button>
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'education-item-delete' item.pk %}">Видалити</button>
             </div>
           {% endfor %}
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#educationInfoModal">Додати</button>
         {% endif %}
 
         {# Досвід роботи #}
@@ -173,7 +170,7 @@
                 {% endif %}
               </ul>
               <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#personalInfoModal">Редагувати</button>
-              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePersonalInfoModal">Видалити</button>
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'experience-item-delete' item.pk %}">Видалити</button>
             </div>
           {% endfor %}
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#experienceInfoModal">Додати</button>
@@ -191,16 +188,16 @@
                 {% endif %}
               </ul>
               <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#personalInfoModal">Редагувати</button>
-              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePersonalInfoModal">Видалити</button>
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'skill-item-delete' item.pk %}">Видалити</button>
             </div>
           {% endfor %}
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#skilllInfoModal">Додати</button>
         {% endif %}
       </div>
-    </div>
   {% endfor %}
 
   <a type="button" href="{% url 'resume-section-create' resume.pk %}" class="btn btn-success">Додати секцію</a>
+</div>
 
   {% comment %}модальне вікно, персональна інформація{% endcomment %}
   <div class="modal fade" id="personalInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -306,21 +303,29 @@
     </div>
   </div>
 
-  <div class="modal" id="deletePersonalInfoModal{{ item.pk }}" tabindex="-1">
+  {# ОДНА МОДАЛЬ ВИДАЛЕННЯ ДЛЯ ВСІХ #}
+  <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Видалити?</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title">Видалити елемент?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Відміна</button>
-          <form method="POST" action="{% url 'personal-info-item-delete' item.pk %}">
+          <form method="POST" id="deleteForm" style="display:inline;">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">Видалити</button>
+            <button type="submit" class="btn btn-danger">Видалити</button>
           </form>
         </div>
       </div>
     </div>
   </div>
+
+  <script>
+    document.getElementById('deleteModal').addEventListener('show.bs.modal', function(e) {
+      const deleteUrl = e.relatedTarget.getAttribute('data-delete-url');
+      document.getElementById('deleteForm').action = deleteUrl;
+    });
+  </script>
 {% endblock %}

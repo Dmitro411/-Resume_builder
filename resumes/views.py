@@ -180,3 +180,10 @@ def delete_personal_info_item_view(request, pk):
         resume_pk = item.section.resume.pk
         item.delete()
         return redirect("resume-detail", pk=resume_pk)
+    
+def delete_education_item_view(request, pk):
+    if request.method == "POST":
+        item = models.EducationItem.objects.get(pk=pk)
+        resume_pk = item.section.resume.pk
+        item.delete()
+        return redirect("resume-detail", pk=resume_pk)

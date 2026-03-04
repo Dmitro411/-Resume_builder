@@ -19,7 +19,10 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
+from resumes.views import ResumeListView
+
 urlpatterns = [
+    path('', ResumeListView.as_view(), name='resume-list'),    
     path('admin/', admin.site.urls),
     path('auth_system/', include('auth_system.urls')),
     path('exporter/', include('exporter.urls')),
