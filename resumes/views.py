@@ -35,7 +35,6 @@ class ResumeCreateView(CreateView):
             "Освіта",
             "Досвід роботи",
             "Навички",
-            "Про себе",
         ]
 
         for i, title in enumerate(DEFAULT_SECTIONS):
@@ -171,8 +170,58 @@ class ResumeDeleteView(DeleteView):
     model = models.Resume
     success_url = reverse_lazy("resume-list")
 
-class ResumeSectionUpdateView(UpdateView):
-    pass
+class ResumePersonalInfoUpdateView(UpdateView):
+    model = models.PrivateInformationItem
+    form_class = forms.PrivateInformationItemCreateForm
+    context_object_name = "form"
+    template_name = 'resumes/personal_info_update.html'
+   
+    def get_success_url(self):
+        # self.object — це саме оновлений item
+        # self.object.resume.pk — якщо у твоєї моделі є ForeignKey на Resume
+        return reverse_lazy('resume-detail', kwargs={'pk': self.object.section.resume.pk})
+
+class ResumeEducationUpdateView(UpdateView):
+    model = models.EducationItem
+    form_class = forms.EducationItemCreateForm
+    context_object_name = "form"
+    template_name = 'resumes/education_update.html'
+   
+    def get_success_url(self):
+        return reverse_lazy('resume-detail', kwargs={'pk': self.object.section.resume.pk})
+
+class ResumeExperienceUpdateView(UpdateView):
+    model = models.ExperienceItem
+    form_class = forms.ExperienceItemCreateForm
+    context_object_name = "form"
+    template_name = 'resumes/experience_update.html'
+   
+    def get_success_url(self):
+        return reverse_lazy('resume-detail', kwargs={'pk': self.object.section.resume.pk})
+
+class ResumeSkillUpdateView(UpdateView):
+    model = models.SkillItem
+    form_class = forms.SkillItemCreateForm
+    context_object_name = "form"
+    template_name = 'resumes/skill_update.html'
+   
+    def get_success_url(self):
+        return reverse_lazy('resume-detail', kwargs={'pk': self.object.section.resume.pk})
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     print(context)
+    #     return super().get_context_data(**kwargs)
+
+# def resume_personal_info_update_view(request, resume_pk, pk):
+#     resume = get_object_or_404(models.Resume, pk = resume_pk)
+#     item = get_object_or_404(models.PrivateInformationItem, pk = pk)
+    
+#     if request.method == "POST":
+#         form = forms.PrivateInformationItemCreateForm(request.POST, instance=item)
+#         if form.is_valid():
+#             form.save()
+#     return redirect("resume-detail", pk=resume_pk)
 
 def delete_personal_info_item_view(request, pk):
     if request.method == "POST":
@@ -189,7 +238,15 @@ def delete_education_item_view(request, pk):
         return redirect("resume-detail", pk=resume_pk)
 
 def delete_experience_item_view(request, pk):
-    pass
-
+    if request.method == "POST":
+        item = models.ExperienceItem.objects.get(pk=pk)
+        resume_pk = item.section.resume.pk
+        item.delete()
+        return redirect("resume-detail", pk=resume_pk)
+    
 def delete_skill_item_view(request, pk):
-    pass
+    if request.method == "POST":
+        item = models.SkillItem.objects.get(pk=pk)
+        resume_pk = item.section.resume.pk
+        item.delete()
+        return redirect("resume-detail", pk=resume_pk)

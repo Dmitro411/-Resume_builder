@@ -66,8 +66,8 @@
                   </li>
                 {% endif %}
               </ul>
-              
-              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#personalInfoModal" data-item-id="{{ item.pk }}">Редагувати</button>
+
+              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updatePersonalInfoModal" data-item-id="{{ item.pk }}" data-resume-id="{{ resume.pk }}" data-update-url="{% url 'resume-personal-info-update' resume.pk item.pk %}">Редагувати</button>
               <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'personal-info-item-delete' item.pk %}">Видалити</button>
             </div>
           {% empty %}
@@ -122,13 +122,11 @@
                 {% endif %}
               </ul>
 
-              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal" data-item-type="education" data-item-id="{{ item.pk }}">Редагувати</button>
+              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateEducationInfoModal" data-item-id="{{ item.pk }}" data-resume-id="{{ resume.pk }}" data-update-url="{% url 'resume-education-update' resume.pk item.pk %}">Редагувати</button>
               <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'education-item-delete' item.pk %}">Видалити</button>
             </div>
-            {% empty %}
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#educationInfoModal">Додати</button>
           {% endfor %}
-          
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#educationInfoModal">Додати</button>
         {% endif %}
 
         {# Досвід роботи #}
@@ -172,7 +170,7 @@
                   </li>
                 {% endif %}
               </ul>
-              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#personalInfoModal">Редагувати</button>
+              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateExperienceInfoModal" data-item-id="{{ item.pk }}" data-resume-id="{{ resume.pk }}" data-update-url="{% url 'resume-experience-update' resume.pk item.pk %}">Редагувати</button>
               <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'experience-item-delete' item.pk %}">Видалити</button>
             </div>
           {% endfor %}
@@ -190,7 +188,7 @@
                   </li>
                 {% endif %}
               </ul>
-              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#personalInfoModal">Редагувати</button>
+              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateSkillInfoModal" data-item-id="{{ item.pk }}" data-resume-id="{{ resume.pk }}" data-update-url="{% url 'resume-skill-update' resume.pk item.pk %}">Редагувати</button>
               <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{% url 'skill-item-delete' item.pk %}">Видалити</button>
             </div>
           {% endfor %}
@@ -199,9 +197,6 @@
       </div>
     </div>
   {% endfor %}
-
-  <a type="button" href="{% url 'resume-section-create' resume.pk %}" class="btn btn-success">Додати секцію</a>
-</div>
 
   {% comment %}модальне вікно, персональна інформація{% endcomment %}
   <div class="modal fade" id="personalInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -224,6 +219,20 @@
               <button type="submit" class="btn btn-primary">Додати</button>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+  </div>
+   {% comment %} модальне вікно для редагування персональної інформації {% endcomment %}
+  <div class="modal fade" id="updatePersonalInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Редагування персональної інформації</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modalBody">
+        <!-- Тут динамічно підвантажиться форма -->
         </div>
       </div>
     </div>
@@ -255,6 +264,21 @@
     </div>
   </div>
 
+  {% comment %} модальне вікно для редагування освіти {% endcomment %}
+  <div class="modal fade" id="updateEducationInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Редагування освіти</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modalEducationInfoBody">
+        <!-- Тут динамічно підвантажиться форма редагування освіти -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   {% comment %}модальне вікно, досвід роботи{% endcomment %}
   <div class="modal fade" id="experienceInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -276,6 +300,21 @@
               <button type="submit" class="btn btn-primary">Додати</button>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    {% comment %} модальне вікно для досвіду роботи {% endcomment %}
+  <div class="modal fade" id="updateExperienceInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Редагування освіти</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modalExperienceInfoBody">
+        <!-- Тут динамічно підвантажиться форма редагування досвіду роботи -->
         </div>
       </div>
     </div>
@@ -307,6 +346,21 @@
     </div>
   </div>
 
+    {% comment %} модальне вікно для навичок {% endcomment %}
+  <div class="modal fade" id="updateSkillInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Редагування освіти</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modalSkillInfoBody">
+        <!-- Тут динамічно підвантажиться форма навичок -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   {# ОДНА МОДАЛЬ ВИДАЛЕННЯ ДЛЯ ВСІХ #}
   <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog">
@@ -327,9 +381,105 @@
   </div>
 
   <script>
-    document.getElementById('deleteModal').addEventListener('show.bs.modal', function(e) {
-      const deleteUrl = e.relatedTarget.getAttribute('data-delete-url');
-      document.getElementById('deleteForm').action = deleteUrl;
+    document.getElementById('deleteModal').addEventListener('show.bs.modal', function (e) {
+      const deleteUrl = e.relatedTarget.getAttribute('data-delete-url')
+      document.getElementById('deleteForm').action = deleteUrl
+    })
+    
+    const modal = document.getElementById('updatePersonalInfoModal');
+
+    modal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; // кнопка, яка відкрила модалку
+
+        // Дані з кнопки
+        const itemId = button.dataset.itemId;
+        const resumeId = button.dataset.resumeId;
+        const url = button.dataset.updateUrl;
+
+        // Підвантажуємо форму через fetch
+        fetch(url)
+          .then(response => response.text())
+          .then(html => {
+              document.getElementById('modalBody').innerHTML = html;
+
+              // Після вставки форми можна задати action форми, якщо потрібно
+              const form = document.querySelector('#modalBody form');
+              if (form) {
+                  form.action = `/resumes/resume/${resumeId}/personal-info/update/${itemId}/`;
+              }
+          });
+    });
+
+    const updateEducationInfoModal = document.getElementById('updateEducationInfoModal');
+
+    updateEducationInfoModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; // кнопка, яка відкрила модалку
+
+        // Дані з кнопки
+        const itemId = button.dataset.itemId;
+        const resumeId = button.dataset.resumeId;
+        const url = button.dataset.updateUrl;
+
+        // Підвантажуємо форму через fetch
+        fetch(url)
+          .then(response => response.text())
+          .then(html => {
+              document.getElementById('modalEducationInfoBody').innerHTML = html;
+
+              // Після вставки форми можна задати action форми, якщо потрібно
+              const form = document.querySelector('#modalEducationInfoBody form');
+              if (form) {
+                  form.action = `/resumes/resume/${resumeId}/education/update/${itemId}/`;
+              }
+          });
+    });
+
+    const updateExperienceInfoModal = document.getElementById('updateExperienceInfoModal');
+
+    updateExperienceInfoModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; // кнопка, яка відкрила модалку
+
+        // Дані з кнопки
+        const itemId = button.dataset.itemId;
+        const resumeId = button.dataset.resumeId;
+        const url = button.dataset.updateUrl;
+
+        // Підвантажуємо форму через fetch
+        fetch(url)
+          .then(response => response.text())
+          .then(html => {
+              document.getElementById('modalExperienceInfoBody').innerHTML = html;
+
+              // Після вставки форми можна задати action форми, якщо потрібно
+              const form = document.querySelector('#modalExperienceInfoBody form');
+              if (form) {
+                  form.action = `/resumes/resume/${resumeId}/experience/update/${itemId}/`;
+              }
+          });
+    });
+
+        const updateSkillInfoModal = document.getElementById('updateSkillInfoModal');
+
+    updateSkillInfoModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; // кнопка, яка відкрила модалку
+
+        // Дані з кнопки
+        const itemId = button.dataset.itemId;
+        const resumeId = button.dataset.resumeId;
+        const url = button.dataset.updateUrl;
+
+        // Підвантажуємо форму через fetch
+        fetch(url)
+          .then(response => response.text())
+          .then(html => {
+              document.getElementById('modalSkillInfoBody').innerHTML = html;
+
+              // Після вставки форми можна задати action форми, якщо потрібно
+              const form = document.querySelector('#modalSkillInfoBody form');
+              if (form) {
+                  form.action = `/resumes/resume/${resumeId}/skill/update/${itemId}/`;
+              }
+          });
     });
   </script>
 {% endblock %}
